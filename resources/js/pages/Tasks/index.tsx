@@ -18,7 +18,9 @@ export default function Index() {
             <Head title="Task" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border"></div>
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                    </div>
                     <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
                         <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
                     </div>
@@ -30,21 +32,21 @@ export default function Index() {
                     <form className="w-full max-w-md space-y-6 p-4">
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="name">Your Name</Label>
-                            <Input type="text" id="name" placeholder="Enter your sexy name" />
+                            <Input type="text" id="name" placeholder="Enter your name" />
                         </div>
 
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="email">Email</Label>
-                            <Input type="email" id="email" placeholder="Enter your hot inbox" />
+                            <Input type="email" id="email" placeholder="Enter your email" />
                         </div>
 
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="password">Password</Label>
-                            <Input type="password" id="password" placeholder="Keep it a naughty secret" />
+                            <Input type="password" id="password" placeholder="Enter your password" />
                         </div>
 
                         <Button type="submit" className="w-full">
-                            Submit Me 😈
+                            Submit
                         </Button>
                     </form>
                 </div>
