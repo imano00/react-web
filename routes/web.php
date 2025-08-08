@@ -15,6 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('tasks', function () {
         return Inertia::render('Tasks/index');
     })->name('tasks.index');
+
+    Route::post('/orders', [OrderController::class, 'store']);
+
 });
 
 require __DIR__.'/settings.php';
