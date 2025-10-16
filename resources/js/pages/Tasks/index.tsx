@@ -17,24 +17,20 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Index() {
     const { data, setData, post, processing, reset, errors } = useForm({
-        customer: '',
-        phone: '',
-        address: '',
-        problem: '',
-        service: '',
+        name: '',
+        type: '',
         price: '',
-        technician: '',
-        notes: '',
+        description: '',
     });
 
-    const submit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/orders'); // Your Laravel route for handling order submissions
+        post(route('drinks.store')); // Your Laravel route for handling drink submissions
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create Order" />
+            <Head title="Create Drink" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     {[...Array(3)].map((_, i) => (
@@ -48,61 +44,52 @@ export default function Index() {
                 </div>
 
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <form onSubmit={submit} className="w-full max-w-2xl space-y-6 p-4">
-                        <h2 className="text-xl font-bold">Create New Service Order</h2>
+                    <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-6 p-4">
+                        <h2 className="text-xl font-bold">Add New Item</h2>
 
                         <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="customer">Customer Name</Label>
-                            <Input id="customer" value={data.customer} onChange={(e) => setData('customer', e.target.value)} />
+                            <Label htmlFor="name">Item Name</Label>
+                            <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} />
                         </div>
 
                         <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="phone">Phone</Label>
-                            <Input id="phone" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
-                        </div>
-
-                        <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="address">Address</Label>
-                            <Textarea id="address" value={data.address} onChange={(e) => setData('address', e.target.value)} />
-                        </div>
-
-                        <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="problem">Problem Description</Label>
-                            <Textarea id="problem" value={data.problem} onChange={(e) => setData('problem', e.target.value)} />
-                        </div>
-
-                        <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="service">Service Type</Label>
-                            <Select onValueChange={(value) => setData('service', value)} value={data.service}>
+                            <Label htmlFor="service">Category</Label>
+                            <Select onValueChange={(value) => setData('type', value)} value={data.type}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select service type" />
+                                    <SelectValue placeholder="Select Category" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="Installation">Installation</SelectItem>
-                                    <SelectItem value="Servicing">Servicing</SelectItem>
-                                    <SelectItem value="Repair">Repair</SelectItem>
+                                    <SelectItem value="Coffee">Coffee</SelectItem>
+                                    <SelectItem value="Soda">Soda</SelectItem>
+                                    <SelectItem value="Matcha">Matcha</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="price">Quoted Price (RM)</Label>
-                            <Input type="number" id="price" value={data.price} onChange={(e) => setData('price', e.target.value)} />
+                            <Label htmlFor="price">Price (RM)</Label>
+                            <div className="relative">
+                                <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500 select-none">RM</span>
+                                <Input
+                                    id="price"
+                                    type="number"
+                                    step="0.10"
+                                    min="0"
+                                    value={data.price}
+                                    onChange={(e) => setData('price', e.target.value)}
+                                    className="pl-10"
+                                    placeholder="0.00"
+                                />
+                            </div>
                         </div>
 
                         <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="technician">Assigned Technician</Label>
-                            <Input id="technician" value={data.technician} onChange={(e) => setData('technician', e.target.value)} />
-                            {/* Replace with a dropdown if you have tech list from backend */}
-                        </div>
-
-                        <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="notes">Admin Notes</Label>
-                            <Textarea id="notes" value={data.notes} onChange={(e) => setData('notes', e.target.value)} />
+                            <Label htmlFor="description">Description</Label>
+                            <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} />
                         </div>
 
                         <Button type="submit" className="w-full" disabled={processing}>
-                            {processing ? 'Submitting...' : 'Submit Order'}
+                            {processing ? 'Adding...' : 'Add Item'}
                         </Button>
                     </form>
                 </div>

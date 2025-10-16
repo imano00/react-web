@@ -58,13 +58,13 @@ export default function Dashboard() {
                                 <CardDescription>
                                     {date?.toLocaleDateString()} {date?.getHours()}
                                     {':'}
-                                    {date?.getMinutes()}
+                                    {date?.getMinutes().toString().padStart(2, '0')}
                                     {':'}
-                                    {date?.getSeconds()}
+                                    {date?.getSeconds().toString().padStart(2, '0')}
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <Calendar mode="single" selected={date} onSelect={setDate} className="size-full w-fit w-full" />
+                            <CardContent className="grid h-fit place-items-center">
+                                <Calendar mode="single" selected={date} onSelect={setDate} />
                             </CardContent>
                         </Card>
                     </div>
