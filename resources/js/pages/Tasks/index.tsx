@@ -54,7 +54,14 @@ export default function Index() {
 
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="service">Category</Label>
-                            <Select onValueChange={(value) => setData('type', value)} value={data.type}>
+                            <Select
+                                onValueChange={(value) => {
+                                    console.log('Selected value:', value);
+                                    console.log('Type of value:', typeof value);
+                                    setData('type', value);
+                                }}
+                                value={data.type}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Category" />
                                 </SelectTrigger>

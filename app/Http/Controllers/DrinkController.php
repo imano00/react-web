@@ -13,7 +13,7 @@ class DrinkController extends Controller
      */
     public function index()
     {
-        $drinks = \App\Models\Drink::all();
+        $drinks = Drink::all();
         return inertia('Drinks/Index', ['drinks' => $drinks]);
     }
 
