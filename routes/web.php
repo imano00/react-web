@@ -20,6 +20,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('drinks', DrinkController::class);
 
+    Route::get('/drinks', [DrinkController::class, 'index'])->name('drinks.index');
+
     // Route::post('/orders', [OrderController::class, 'store']);
 
     // Route::apiResource('orders', OrderController::class);

@@ -15,6 +15,8 @@ class DrinkController extends Controller
     {
         $drinks = Drink::all();
         return inertia('Drinks/Index', ['drinks' => $drinks]);
+        // below code are used to test retrieval data without front end
+        // return response()->json($drinks);
     }
 
     /**
