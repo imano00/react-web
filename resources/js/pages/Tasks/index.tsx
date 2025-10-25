@@ -18,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Index() {
     const { data, setData, post, processing, reset, errors } = useForm({
         name: '',
-        type: '',
+        category: '',
         price: '',
         description: '',
     });
@@ -58,9 +58,9 @@ export default function Index() {
                                 onValueChange={(value) => {
                                     console.log('Selected value:', value);
                                     console.log('Type of value:', typeof value);
-                                    setData('type', value);
+                                    setData('category', value);
                                 }}
-                                value={data.type}
+                                value={data.category}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Category" />
