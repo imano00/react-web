@@ -65,7 +65,18 @@ class DrinkController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $drink = Drink::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required',
+            'category' => 'required',
+            'price' => 'required',
+            'description' => 'nullable',
+        ]);
+
+        $drink->update($request->all());
+
+        return redirect()->route('drinks.index')->with('success', 'Drink updated successfully!');
     }
 
     /**
@@ -73,6 +84,9 @@ class DrinkController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $drink = Drink::findOrFail($id);
+        $drink->delete();
+
+        return redirect()->back()->with('success', 'Drink deleted successfully!');
     }
 }
