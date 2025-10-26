@@ -20,8 +20,8 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Task List',
-        href: '/tasks',
+        title: 'Drinks',
+        href: '/drinks',
         icon: BriefcaseBusinessIcon,
     },
 ];
@@ -95,7 +95,7 @@ export function AppSidebar({ className = '', ...props }: HTMLAttributes<HTMLDivE
                         onCheckedChange={() => updateAppearance(appearance === 'dark' ? 'light' : 'dark')}
                         className={cn(
                             appearance === value
-                                ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
+                                ? 'shadow-xs bg-white dark:bg-neutral-700 dark:text-neutral-100'
                                 : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',
                         )}
                     />
