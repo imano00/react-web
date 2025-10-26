@@ -22,6 +22,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/drinks', [DrinkController::class, 'index'])->name('drinks.index');
 
+    Route::put('/drinks/{id}', [DrinkController::class, 'update'])->name('drinks.update');
+
+    Route::delete('/drinks/{id}', [DrinkController::class, 'destroy'])->name('drinks.destroy');
+
     // Route::post('/orders', [OrderController::class, 'store']);
 
     // Route::apiResource('orders', OrderController::class);
