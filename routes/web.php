@@ -17,7 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('tasks', function () {
         return Inertia::render('Tasks/index');
     })->name('tasks.index');
-
+                                   
     Route::resource('drinks', DrinkController::class);
 
     Route::get('/drinks', [DrinkController::class, 'index'])->name('drinks.index');
