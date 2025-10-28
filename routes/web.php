@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DrinkController;
+use App\Http\Controllers\SaleController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -13,10 +13,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
-
-    Route::get('tasks', function () {
-        return Inertia::render('Tasks/index');
-    })->name('tasks.index');
                                    
     Route::resource('drinks', DrinkController::class);
 
@@ -25,6 +21,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/drinks/{id}', [DrinkController::class, 'update'])->name('drinks.update');
 
     Route::delete('/drinks/{id}', [DrinkController::class, 'destroy'])->name('drinks.destroy');
+
+    Route::resource('sales', SaleController::class);
+
+    Route::get('/sales/create', [SaleController::class, 'create'])->name('sales.create');
+
+    Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
 
     // Route::post('/orders', [OrderController::class, 'store']);
 
