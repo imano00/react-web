@@ -11,7 +11,7 @@ class SaleController extends Controller
 {
         public function index()
     {
-         $sales = Sale::with('items.drink')->latest()->get();
+         $sales = Sale::with('user','items.drink')->latest()->get();
         return inertia('Sales/Index', ['sales' => $sales]);
         // below code are used to test retrieval data without front end
         // return response()->json($drinks);
@@ -38,7 +38,7 @@ class SaleController extends Controller
     // Calculate total from the items
     $total = collect($validated['items'])->sum(fn($item) => $item['price'] * $item['quantity']);
 
-    $transaction = Sale::create([
+    $sale = Sale::create([
         'invoice_number' => 'INV-' . now()->format('YmdHis'),
         'user_id' => auth()->id(),
         'total' => $total,
@@ -47,13 +47,11 @@ class SaleController extends Controller
     ]);
 
     foreach ($validated['items'] as $item) {
-        $transaction->items()->create($item);
+        $sale->items()->create($item);
     }
 
-    return response()->json([
-        'message' => 'Transaction created successfully!',
-        'data' => $transaction->load('items'),
-    ]);
+     // Redirect back with success toast
+    return redirect()->route('sales.show', $sale->id)->with('success', 'Sale completed!');
 }
 
 public function show(Sale $sale)
