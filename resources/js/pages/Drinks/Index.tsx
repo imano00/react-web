@@ -52,7 +52,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
     } = useForm({
         name: '',
         category: '',
-        price: '',
+        price: 0,
         description: '',
     });
 
@@ -238,6 +238,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                         <SelectItem value="Coffee">Coffee</SelectItem>
                                         <SelectItem value="Soda">Soda</SelectItem>
                                         <SelectItem value="Matcha">Matcha</SelectItem>
+                                        <SelectItem value="Chocolate">Chocolate</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -248,7 +249,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                     type="text"
                                     className="w-full rounded border p-2"
                                     value={data.price}
-                                    onChange={(e) => setData('price', e.target.value)}
+                                    onChange={(e) => setData('price', Number(e.target.value))}
                                 />
                             </div>
 
@@ -296,6 +297,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                     <SelectItem value="Coffee">Coffee</SelectItem>
                                     <SelectItem value="Soda">Soda</SelectItem>
                                     <SelectItem value="Matcha">Matcha</SelectItem>
+                                    <SelectItem value="Chocolate">Chocolate</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -303,14 +305,14 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="price">Price (RM)</Label>
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 select-none text-gray-500">RM</span>
+                                <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500 select-none">RM</span>
                                 <Input
                                     id="price"
                                     type="number"
                                     step="0.10"
                                     min="0"
                                     value={data.price}
-                                    onChange={(e) => setData('price', e.target.value)}
+                                    onChange={(e) => setData('price', Number(e.target.value))}
                                     className="pl-10"
                                     placeholder="0.00"
                                 />
