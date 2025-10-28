@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BookOpen, BriefcaseBusinessIcon, Folder, LayoutGrid, Moon, Sun } from 'lucide-react';
+import { BookOpen, BriefcaseBusinessIcon, Folder, LayoutGrid, Moon, Sun, CupSoda, BadgeDollarSign } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 import AppLogo from './app-logo';
 import { Label } from './ui/label';
@@ -22,6 +22,16 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Drinks',
         href: '/drinks',
+        icon: CupSoda,
+    },
+    {
+        title: 'Sales',
+        href: '/sales/create',
+        icon: BadgeDollarSign,
+    },
+    {
+        title: 'Sales History',
+        href: '/sales/show',
         icon: BriefcaseBusinessIcon,
     },
 ];
@@ -95,7 +105,7 @@ export function AppSidebar({ className = '', ...props }: HTMLAttributes<HTMLDivE
                         onCheckedChange={() => updateAppearance(appearance === 'dark' ? 'light' : 'dark')}
                         className={cn(
                             appearance === value
-                                ? 'shadow-xs bg-white dark:bg-neutral-700 dark:text-neutral-100'
+                                ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
                                 : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',
                         )}
                     />
