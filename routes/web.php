@@ -24,9 +24,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('sales', SaleController::class);
 
+    Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+
     Route::get('/sales/create', [SaleController::class, 'create'])->name('sales.create');
 
-    Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
+    //Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
 
     // Route::post('/orders', [OrderController::class, 'store']);
 
