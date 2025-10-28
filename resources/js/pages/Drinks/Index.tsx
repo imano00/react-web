@@ -238,7 +238,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                         <SelectItem value="Coffee">Coffee</SelectItem>
                                         <SelectItem value="Soda">Soda</SelectItem>
                                         <SelectItem value="Matcha">Matcha</SelectItem>
-                                        <SelectItem value="Chocolate">Chocolate</SelectItem>
+                                        <SelectItem value="Chocolate"></SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
