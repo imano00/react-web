@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DrinkController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\StatisticController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -27,6 +29,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
 
     Route::get('/sales/create', [SaleController::class, 'create'])->name('sales.create');
+
+    Route::get('/statistics', [StatisticController::class, 'index'])->name('statistics.index');
+
+    Route::get('/dummyhihihaha', [DashboardController::class, 'dummyFunction'])->name('dashboard.dummy');
 
     //Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
 
