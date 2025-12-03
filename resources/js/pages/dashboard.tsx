@@ -7,6 +7,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import * as React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import MonthlySalesChart from './charts/MonthlySalesChart';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -51,51 +52,60 @@ export default function Dashboard() {
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-auto flex-auto overflow-hidden rounded-xl border outline-2">
-                        <Card className="align-center">
-                            <CardHeader>
-                                <CardTitle>Date</CardTitle>
-                                <CardDescription>
-                                    {date?.toLocaleDateString()} {date?.getHours()}
-                                    {':'}
-                                    {date?.getMinutes().toString().padStart(2, '0')}
-                                    {':'}
-                                    {date?.getSeconds().toString().padStart(2, '0')}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="grid h-fit place-items-center">
-                                <Calendar mode="single" selected={date} onSelect={setDate} />
-                            </CardContent>
-                        </Card>
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-auto flex-auto overflow-hidden rounded-xl border outline-2">
-                        <ChartContainer config={chartConfig} className="h-full min-h-[200px] w-full outline-2">
-                            <BarChart accessibilityLayer data={chartData}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis
-                                    dataKey="month"
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tickMargin={10}
-                                    tickFormatter={(value) => value.slice(0, 3)}
-                                />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <ChartLegend content={<ChartLegendContent />} />
-                                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-                            </BarChart>
-                        </ChartContainer>
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-auto flex-auto overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-auto flex-auto overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
+                    <Card className="align-center">
+                        <CardHeader>
+                            <CardTitle>Date</CardTitle>
+                            <CardDescription>
+                                {date?.toLocaleDateString()} {date?.getHours()}
+                                {':'}
+                                {date?.getMinutes().toString().padStart(2, '0')}
+                                {':'}
+                                {date?.getSeconds().toString().padStart(2, '0')}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Calendar mode="single" selected={date} />
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Sales Overview</CardTitle>
+                            <CardDescription>Sales data for desktop and mobile users.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                            <ChartContainer config={chartConfig} className="h-full min-h-[200px] w-full">
+                                <BarChart accessibilityLayer data={chartData}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis
+                                        dataKey="month"
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickMargin={10}
+                                        tickFormatter={(value) => value.slice(0, 3)}
+                                    />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <ChartLegend content={<ChartLegendContent payload="huehue" />} />
+                                    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                                    <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                                </BarChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Placeholder Patterns</CardTitle>
+                            <CardDescription>Using SVG patterns as placeholders for loading states.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                            <PlaceholderPattern className="inset-0 stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                        </CardContent>
+                    </Card>
                 </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div>
+                <Card>
+                    <CardContent className="p-2">
+                        <MonthlySalesChart />
+                    </CardContent>
+                </Card>
             </div>
         </AppLayout>
     );

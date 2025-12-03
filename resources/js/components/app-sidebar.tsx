@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeDollarSign, BookOpen, BriefcaseBusinessIcon, CupSoda, Folder, LayoutGrid, Moon, Sun } from 'lucide-react';
+import { BadgeDollarSign, BookOpen, BriefcaseBusinessIcon, ChartColumnStacked, CupSoda, Folder, LayoutGrid, Moon, Sun } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 import AppLogo from './app-logo';
 import { Label } from './ui/label';
@@ -33,6 +33,11 @@ const mainNavItems: NavItem[] = [
         title: 'Sales History',
         href: '/sales',
         icon: BriefcaseBusinessIcon,
+    },
+    {
+        title: 'Statistics',
+        href: '/statistics',
+        icon: ChartColumnStacked,
     },
 ];
 

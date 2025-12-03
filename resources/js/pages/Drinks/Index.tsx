@@ -1,4 +1,4 @@
-import { Textarea } from '@/components/textarea';
+import AddDrinkDialog from '@/components/custom-component/add-drink-dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -22,16 +22,16 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import { Eye, Pen, Trash2 } from 'lucide-react';
+import { SelectGroup } from '@radix-ui/react-select';
+import { CakeSlice, Coffee, CupSoda, Eye, Leaf, Pen, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -52,13 +52,14 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
     const [editingDrink, setEditingDrink] = useState<null | number>(null);
     const [deleteDrink, setDeleteDrink] = useState<null | number>(null);
     const [open, setOpen] = useState(false);
+    const [filter, setFilter] = useState('All');
+
     const {
         data,
         setData,
         post,
         processing,
         reset,
-        errors,
         put,
         delete: destroy,
     } = useForm({
@@ -80,12 +81,30 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
     };
 
     const editSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Updating drink:', data);
-        put(route('drinks.update', { id: editingDrink }), {
-            onSuccess: () => setEditingDrink(null),
-        });
+        try {
+            e.preventDefault();
+            console.log('Updating drink:', data);
+            put(route('drinks.update', { id: editingDrink }), {
+                onSuccess: () => {
+                    (setEditingDrink(null), toast.success('Edit saved successfully! 💛'), setOpen(false));
+                },
+            });
+        } catch (e) {
+            console.error('Error updating drink:', e);
+        }
     };
+
+    // const submitUpdate = async () => {
+    //     await fetch(`/api/drinks/${editingDrink}`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(data),
+    //     });
+
+    //     setOpen(false);
+    // };
 
     const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to delete this drink? 😢')) {
@@ -102,80 +121,43 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
      */
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('drinks.store')); // Your Laravel route for handling drink submissions
+
+        post(route('drinks.store'), {
+            onSuccess: () => {
+                toast.success('New drink added! 🧋');
+                setOpen(false); // close dialog
+                reset(); // reset fields
+            },
+        });
     };
+
+    const filteredDrinks = filter === 'All' ? drinks : drinks.filter((d) => d.category === filter);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Drink" />
             <Card className="border-muted mx-4 mb-4 border shadow-sm">
-                <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Create New Drink 🧋</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] w-full flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                        <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-6 p-4">
-                            <h2 className="text-xl font-bold">Add New Item</h2>
-
-                            <div className="grid w-full items-center gap-1.5">
-                                <Label htmlFor="name">Item Name</Label>
-                                <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} />
-                            </div>
-
-                            <div className="grid w-full items-center gap-1.5">
-                                <Label htmlFor="service">Category</Label>
-                                <Select
-                                    onValueChange={(value) => {
-                                        console.log('Selected value:', value);
-                                        console.log('Type of value:', typeof value);
-                                        setData('category', value);
-                                    }}
-                                    value={data.category}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select Category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Coffee">Coffee</SelectItem>
-                                        <SelectItem value="Soda">Soda</SelectItem>
-                                        <SelectItem value="Matcha">Matcha</SelectItem>
-                                        <SelectItem value="Chocolate">Chocolate</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="grid w-full items-center gap-1.5">
-                                <Label htmlFor="price">Price (RM)</Label>
-                                <div className="relative">
-                                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500 select-none">RM</span>
-                                    <Input
-                                        id="price"
-                                        type="number"
-                                        step="0.10"
-                                        min="0"
-                                        value={data.price}
-                                        onChange={(e) => setData('price', Number(e.target.value))}
-                                        className="pl-10"
-                                        placeholder="0.00"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid w-full items-center gap-1.5">
-                                <Label htmlFor="description">Description</Label>
-                                <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} />
-                            </div>
-
-                            <Button type="submit" className="w-full" disabled={processing}>
-                                {processing ? 'Adding...' : 'Add Item'}
-                            </Button>
-                        </form>
-                    </div>
-                </CardContent>
-            </Card>
-            <Card className="border-muted mx-4 mb-4 border shadow-sm">
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="text-lg font-semibold">Drink List 🧋</CardTitle>
+
+                    {/* ✨ Filter by Category */}
+                    <Select value={filter} onValueChange={setFilter}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Filter by Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="All">All</SelectItem>
+                                <SelectItem value="Coffee">Coffee</SelectItem>
+                                <SelectItem value="Soda">Soda</SelectItem>
+                                <SelectItem value="Chocolate">Chocolate</SelectItem>
+                                <SelectItem value="Matcha">Matcha</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+
+                    {/* ✨ Add New Drink Button */}
+                    <AddDrinkDialog />
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -189,7 +171,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {drinks.map((drink) => (
+                            {filteredDrinks.map((drink) => (
                                 <TableRow key={drink.id}>
                                     <TableCell>{drink.id}</TableCell>
                                     <TableCell>{drink.name}</TableCell>
@@ -214,7 +196,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                                             <strong className="text-foreground text-xl font-semibold">Category:</strong>{' '}
                                                             {drink.category}
                                                         </p>
-                                                        {/* <Card className="border-muted flex items-center shadow-sm">
+                                                        <Card className="border-muted flex items-center shadow-sm">
                                                             <div>
                                                                 <p className="text-muted-foreground text-sm">Category</p>
                                                                 <p className="text-lg font-medium capitalize">
@@ -235,7 +217,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                                                     </div>
                                                                 </p>
                                                             </div>
-                                                        </Card> */}
+                                                        </Card>
                                                         <p>
                                                             <strong className="text-foreground text-xl font-semibold">Price:</strong> RM{' '}
                                                             {Number(drink.price).toFixed(2)}
@@ -258,13 +240,81 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                         </Dialog>
 
                                         {/* ✏️ Edit Button */}
-                                        <button
+                                        {/* <button
                                             onClick={() => startEdit(drink)}
                                             className="rounded-full p-2 text-blue-500 transition-colors hover:bg-blue-100"
                                             title="Edit"
                                         >
                                             <Pen size={18} strokeWidth={1.8} />
-                                        </button>
+                                        </button> */}
+
+                                        <AlertDialog open={open} onOpenChange={setOpen}>
+                                            <AlertDialogTrigger asChild>
+                                                <button
+                                                    onClick={() => startEdit(drink)}
+                                                    className="rounded-full p-2 text-blue-500 transition-colors hover:bg-blue-100"
+                                                    title="Edit"
+                                                >
+                                                    <Pen size={18} strokeWidth={1.8} />
+                                                </button>
+                                            </AlertDialogTrigger>
+
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Edit Drink</AlertDialogTitle>
+                                                </AlertDialogHeader>
+
+                                                {/* ✏️ Edit Form */}
+                                                <div className="mt-2 space-y-3">
+                                                    <div>
+                                                        <label className="text-sm">Name</label>
+                                                        <input
+                                                            value={data.name}
+                                                            onChange={(e) => setData('name', e.target.value)}
+                                                            className="w-full rounded-md border p-2"
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="text-sm">Category</label>
+                                                        <select
+                                                            value={data.category}
+                                                            onChange={(e) => setData('category', e.target.value)}
+                                                            className="w-full rounded-md border p-2"
+                                                        >
+                                                            <option value="Coffee">Coffee</option>
+                                                            <option value="Soda">Soda</option>
+                                                            <option value="Chocolate">Chocolate</option>
+                                                            <option value="Matcha">Matcha</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="text-sm">Price (RM)</label>
+                                                        <input
+                                                            type="number"
+                                                            value={data.price}
+                                                            onChange={(e) => setData('price', Number(e.target.value))}
+                                                            className="w-full rounded-md border p-2"
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="text-sm">Description</label>
+                                                        <textarea
+                                                            value={data.description}
+                                                            onChange={(e) => setData('description', e.target.value)}
+                                                            className="w-full rounded-md border p-2"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <AlertDialogFooter className="mt-4">
+                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={editSubmit}>Save Changes</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
 
                                         {/* 🗑️ Delete Button */}
                                         <AlertDialog>
@@ -277,7 +327,6 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                                     <Trash2 size={18} strokeWidth={1.8} />
                                                 </button>
                                             </AlertDialogTrigger>
-
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Delete this drink?</AlertDialogTitle>
@@ -292,9 +341,11 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                                     <AlertDialogAction
                                                         className="bg-red-500 hover:bg-red-600"
                                                         onClick={() => {
-                                                            destroy(route('drinks.destroy', deleteDrink), {
-                                                                onSuccess: () => setDeleteDrink(null),
-                                                            });
+                                                            if (deleteDrink) {
+                                                                destroy(route('drinks.destroy', deleteDrink), {
+                                                                    onSuccess: () => setDeleteDrink(null),
+                                                                });
+                                                            }
                                                         }}
                                                     >
                                                         Delete
