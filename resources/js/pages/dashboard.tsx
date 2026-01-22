@@ -63,8 +63,8 @@ export default function Dashboard() {
                                 {date?.getSeconds().toString().padStart(2, '0')}
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <Calendar mode="single" selected={date} />
+                        <CardContent className="w-200px">
+                            <Calendar mode="single" selected={date} onSelect={setDate} className="rounded-lg border" />
                         </CardContent>
                     </Card>
                     <Card>
