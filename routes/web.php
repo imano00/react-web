@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\DrinkController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StatisticController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -32,8 +33,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/statistics', [StatisticController::class, 'index'])->name('statistics.index');
 
-    Route::get('/dummyhihihaha', [DashboardController::class, 'dummyFunction'])->name('dashboard.dummy');
-
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    
     //Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
 
     // Route::post('/orders', [OrderController::class, 'store']);
