@@ -1,4 +1,6 @@
+import SearchBar from '@/components/custom-component/search-bar';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
@@ -24,7 +26,8 @@ type SaleItem = Drink & { quantity: number };
 export default function TransactionPage({ drinks }: { drinks: Drink[] }) {
     const [cart, setCart] = useState<SaleItem[]>([]);
     const [paid, setPaid] = useState<string>('');
-    const [filter, setFilter] = useState('All');
+    const [category, setCategory] = useState('All');
+    const [search, setSearch] = useState('');
 
     const addToCart = (drink: Drink) => {
         const existing = cart.find((item) => item.id === drink.id);
@@ -62,34 +65,44 @@ export default function TransactionPage({ drinks }: { drinks: Drink[] }) {
         );
     };
 
-    const filteredDrinks = filter === 'All' ? drinks : drinks.filter((d) => d.category === filter);
+    // Filter drinks based on search and category
+    const filteredDrinks = drinks.filter((drink) => {
+        const matchesSearch = drink.name.toLowerCase().includes(search.toLowerCase());
+
+        const matchesCategory = category === 'All' || drink.category === category;
+
+        return matchesSearch && matchesCategory;
+    });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-1/2 flex-1 flex-col gap-4 rounded-xl p-4">
                 <h2 className="mb-4 text-2xl font-semibold">🧾 New Sale</h2>
                 {/* ✨ Filter by Category */}
-                <Select value={filter} onValueChange={setFilter}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem value="All">All</SelectItem>
-                            <SelectItem value="Coffee">Coffee</SelectItem>
-                            <SelectItem value="Soda">Soda</SelectItem>
-                            <SelectItem value="Chocolate">Chocolate</SelectItem>
-                            <SelectItem value="Matcha">Matcha</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                <div className="flex flex-row items-center">
+                    <Select value={category} onValueChange={setCategory}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Filter by Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="All">All</SelectItem>
+                                <SelectItem value="Coffee">Coffee</SelectItem>
+                                <SelectItem value="Soda">Soda</SelectItem>
+                                <SelectItem value="Chocolate">Chocolate</SelectItem>
+                                <SelectItem value="Matcha">Matcha</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <SearchBar value={search} onChange={setSearch} placeholder="Search drinks" className="mx-2 w-full" />
+                </div>
                 {/* Drinks Grid */}
                 <div className="mb-6 grid grid-cols-3 gap-3">
                     {filteredDrinks.map((drink) => (
-                        <div key={drink.id} className="cursor-pointer rounded-lg border p-3 hover:bg-slate-100" onClick={() => addToCart(drink)}>
+                        <Card key={drink.id} className="cursor-pointer rounded-lg p-3 hover:bg-gray-100" onClick={() => addToCart(drink)}>
                             <p className="font-semibold">{drink.name}</p>
                             <p>RM {Number(drink.price).toFixed(2)}</p>
-                        </div>
+                        </Card>
                     ))}
                 </div>
 
