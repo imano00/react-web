@@ -46,7 +46,7 @@ export default function AddInventoryItemDialog() {
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild>
-                <Button>+ Add New Drink</Button>
+                <Button>+ Add New Item</Button>
             </AlertDialogTrigger>
 
             <AlertDialogContent>
