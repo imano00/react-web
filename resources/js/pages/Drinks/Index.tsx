@@ -1,4 +1,5 @@
 import AddDrinkDialog from '@/components/custom-component/add-drink-dialog';
+import SearchBar from '@/components/custom-component/search-bar';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -53,7 +54,8 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
     const [editingDrink, setEditingDrink] = useState<null | number>(null);
     const [deleteDrink, setDeleteDrink] = useState<null | number>(null);
     const [open, setOpen] = useState(false);
-    const [filter, setFilter] = useState('All');
+    const [category, setCategory] = useState('All');
+    const [search, setSearch] = useState('');
 
     const {
         data,
@@ -132,18 +134,24 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
         });
     };
 
-    const filteredDrinks = filter === 'All' ? drinks : drinks.filter((d) => d.category === filter);
+    // Filter drinks based on search and category
+    const filteredDrinks = drinks.filter((drink) => {
+        const matchesSearch = drink.name.toLowerCase().includes(search.toLowerCase());
+
+        const matchesCategory = category === 'All' || drink.category === category;
+
+        return matchesSearch && matchesCategory;
+    });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Drink" />
             <Card className="border-muted mx-4 mb-4 border shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle className="text-lg font-semibold">Drink List 🧋</CardTitle>
-
+                <CardHeader className="flex flex-row items-center justify-around">
+                    <CardTitle className="w-full text-lg font-semibold">Drink List 🧋</CardTitle>
                     {/* ✨ Filter by Category */}
-                    <Select value={filter} onValueChange={setFilter}>
-                        <SelectTrigger className="w-[180px]">
+                    <Select value={category} onValueChange={setCategory}>
+                        <SelectTrigger>
                             <SelectValue placeholder="Filter by Category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -156,6 +164,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                             </SelectGroup>
                         </SelectContent>
                     </Select>
+                    <SearchBar value={search} onChange={setSearch} placeholder="Search drinks" className="mx-2 w-full" />
 
                     {/* ✨ Add New Drink Button */}
                     <AddDrinkDialog />
