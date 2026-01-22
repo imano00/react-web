@@ -10,6 +10,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -190,34 +191,36 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                             </DialogTrigger>
                                             <DialogContent className="max-w-md">
                                                 <DialogHeader>
-                                                    <DialogTitle className="text-foreground text-xl font-semibold">{drink.name}</DialogTitle>
-                                                    <DialogDescription className="text-foreground text-xl font-semibold">
-                                                        <p>
-                                                            <strong className="text-foreground text-xl font-semibold">Category:</strong>{' '}
-                                                            {drink.category}
-                                                        </p>
-                                                        <Card className="border-muted flex items-center shadow-sm">
-                                                            <div>
-                                                                <p className="text-muted-foreground text-sm">Category</p>
-                                                                <p className="text-lg font-medium capitalize">
-                                                                    {drink.category}
-                                                                    <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full">
-                                                                        {(drink.category === 'coffee' || drink.category === 'Coffee') && (
-                                                                            <Coffee size={20} className="text-amber-700" />
-                                                                        )}
-                                                                        {(drink.category === 'soda' || drink.category === 'Soda') && (
-                                                                            <CupSoda size={20} className="text-sky-500" />
-                                                                        )}
-                                                                        {(drink.category === 'matcha' || drink.category === 'Matcha') && (
-                                                                            <Leaf size={20} className="text-green-600" />
-                                                                        )}
-                                                                        {(drink.category === 'chocolate' || drink.category === 'Chocolate') && (
-                                                                            <CakeSlice size={20} className="text-brown-700" />
-                                                                        )}
-                                                                    </div>
-                                                                </p>
-                                                            </div>
+                                                    <div className="my-2 mr-4 ml-2 flex items-center justify-between">
+                                                        <DialogTitle className="text-foreground text-xl font-semibold">{drink.name}</DialogTitle>
+                                                        <Card className="border-muted shadow-sm">
+                                                            <CardContent className="flex items-center">
+                                                                <p className="text-md px-2 font-medium capitalize">{drink.category}</p>
+                                                                {(drink.category === 'coffee' || drink.category === 'Coffee') && (
+                                                                    <Badge className="h-7 min-w-7 rounded-full">
+                                                                        <Coffee size={20} />
+                                                                    </Badge>
+                                                                )}
+                                                                {(drink.category === 'soda' || drink.category === 'Soda') && (
+                                                                    <Badge className="h-7 min-w-7 rounded-full">
+                                                                        <CupSoda size={20} className="text-sky-500" />
+                                                                    </Badge>
+                                                                )}
+                                                                {(drink.category === 'matcha' || drink.category === 'Matcha') && (
+                                                                    <Badge className="h-7 min-w-7 rounded-full">
+                                                                        <Leaf size={20} className="text-green-600" />
+                                                                    </Badge>
+                                                                )}
+                                                                {(drink.category === 'chocolate' || drink.category === 'Chocolate') && (
+                                                                    <Badge className="h-7 min-w-7 rounded-full">
+                                                                        <CakeSlice size={20} className="text-brown-700" />
+                                                                    </Badge>
+                                                                )}
+                                                            </CardContent>
                                                         </Card>
+                                                    </div>
+
+                                                    <DialogDescription className="text-foreground text-xl font-semibold">
                                                         <p>
                                                             <strong className="text-foreground text-xl font-semibold">Price:</strong> RM{' '}
                                                             {Number(drink.price).toFixed(2)}
