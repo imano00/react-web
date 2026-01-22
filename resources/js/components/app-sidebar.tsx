@@ -39,6 +39,11 @@ const mainNavItems: NavItem[] = [
         href: '/statistics',
         icon: ChartColumnStacked,
     },
+    {
+        title: 'Inventory',
+        href: '/inventory',
+        icon: Folder,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
