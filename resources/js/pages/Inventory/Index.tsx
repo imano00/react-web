@@ -1,11 +1,10 @@
 import AddInventoryItemDialog from '@/components/custom-component/add-inventory-item-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { ItemList } from '@/components/custom-component/item-list';
+import SearchBar from '@/components/custom-component/search-bar';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Search } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -13,7 +12,37 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/inventory',
     },
 ];
-export default function Index() {
+
+type InventoryItem = {
+    id: number;
+    name: string;
+    category: string;
+    unit: string;
+    quantity: number;
+    reorder_level: number;
+};
+
+export default function Index({ initialItems }: { initialItems: InventoryItem[] }) {
+    const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
+    const [items, setItems] = useState<InventoryItem[]>(initialItems);
+    const [search, setSearch] = useState('');
+    const [category, setCategory] = useState('All');
+
+    const handleEdit = (item: InventoryItem) => {
+        setEditingItem(item);
+    };
+
+    const handleDelete = (id: number) => {
+        if (!confirm('Are you sure you want to delete this item?')) return;
+
+        setItems((prev) => prev.filter((item) => item.id !== id));
+    };
+
+    const filteredItems = items.filter((item) => {
+        const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+        return matchesSearch;
+    });
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Inventory" />
@@ -22,30 +51,12 @@ export default function Index() {
 
                 {/* Search & Add */}
                 <div className="flex items-center gap-4">
-                    <div className="flex w-full items-center rounded-2xl border px-4 py-2 shadow-sm">
-                        <Search className="h-5 w-5 opacity-60" />
-                        <input type="text" placeholder="Search ingredients..." className="ml-3 w-full bg-transparent outline-none" />
-                    </div>
+                    <SearchBar placeholder="Search item" value={search} onChange={setSearch} className="w-full" />
                     <AddInventoryItemDialog />
                 </div>
 
                 {/* Inventory List */}
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {/* Example Item */}
-                    <Card className="rounded-2xl shadow-md">
-                        <CardContent className="space-y-2 p-4">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-lg font-medium">Coffee Beans</h2>
-                                <span>
-                                    <Badge className="h-7 min-w-7 rounded-full px-2 font-mono tabular-nums">8</Badge>
-                                </span>
-                            </div>
-                            <p className="text-sm opacity-70">Current Stock: 1200g</p>
-                            <p className="text-sm opacity-70">Reorder Level: 500g</p>
-                            <Button className="mt-2 w-full rounded-2xl">View Details</Button>
-                        </CardContent>
-                    </Card>
-                </div>
+                <ItemList items={filteredItems} onEdit={handleEdit} onDelete={handleDelete} />
             </div>
         </AppLayout>
     );
