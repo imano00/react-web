@@ -34,6 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/statistics', [StatisticController::class, 'index'])->name('statistics.index');
 
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+
+    Route::put('/inventory/{id}', [InventoryController::class, 'update'])->name('inventory.update');
     
     //Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
 
