@@ -3,6 +3,7 @@ export type InventoryItem = {
   name: string;
   category: string;
   unit: string;
-  quantity: number;        // used in UI  // from backend
+  current_stock: number;       
   reorder_level: number;
+  description: string | null;
 };
