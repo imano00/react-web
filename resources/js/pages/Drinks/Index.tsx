@@ -1,4 +1,7 @@
 import AddDrinkDialog from '@/components/custom-component/add-drink-dialog';
+import DetailCard from '@/components/custom-component/detail-card';
+import EditDialog from '@/components/custom-component/edit-dialog';
+import EditForm from '@/components/custom-component/edit-form';
 import SearchBar from '@/components/custom-component/search-bar';
 import {
     AlertDialog,
@@ -11,27 +14,15 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { Button } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { SelectGroup } from '@radix-ui/react-select';
-import { CakeSlice, Coffee, CupSoda, Eye, Leaf, Pen, Trash2 } from 'lucide-react';
+import { Pen, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -56,12 +47,13 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
     const [open, setOpen] = useState(false);
     const [category, setCategory] = useState('All');
     const [search, setSearch] = useState('');
+    const [categories] = useState<string[]>([]); // Define categories here
+    const [showDescription] = useState(true);
 
     const {
         data,
         setData,
         post,
-        processing,
         reset,
         put,
         delete: destroy,
@@ -189,144 +181,23 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                     <TableCell>{Number(drink.price).toFixed(2)}</TableCell>
                                     <TableCell className="space-x-1 text-center">
                                         {/* ✨ View Details Button */}
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <button
-                                                    className="rounded-full p-2 text-purple-500 transition-colors hover:bg-purple-100"
-                                                    title="View Details"
-                                                >
-                                                    <Eye size={18} strokeWidth={1.8} />
-                                                </button>
-                                            </DialogTrigger>
-                                            <DialogContent className="max-w-md">
-                                                <DialogHeader>
-                                                    <div className="my-2 mr-4 ml-2 flex items-center justify-between">
-                                                        <DialogTitle className="text-foreground text-xl font-semibold">{drink.name}</DialogTitle>
-                                                        <Card className="border-muted shadow-sm">
-                                                            <CardContent className="flex items-center">
-                                                                <p className="text-md px-2 font-medium capitalize">{drink.category}</p>
-                                                                {(drink.category === 'coffee' || drink.category === 'Coffee') && (
-                                                                    <Badge className="h-7 min-w-7 rounded-full">
-                                                                        <Coffee size={20} />
-                                                                    </Badge>
-                                                                )}
-                                                                {(drink.category === 'soda' || drink.category === 'Soda') && (
-                                                                    <Badge className="h-7 min-w-7 rounded-full">
-                                                                        <CupSoda size={20} className="text-sky-500" />
-                                                                    </Badge>
-                                                                )}
-                                                                {(drink.category === 'matcha' || drink.category === 'Matcha') && (
-                                                                    <Badge className="h-7 min-w-7 rounded-full">
-                                                                        <Leaf size={20} className="text-green-600" />
-                                                                    </Badge>
-                                                                )}
-                                                                {(drink.category === 'chocolate' || drink.category === 'Chocolate') && (
-                                                                    <Badge className="h-7 min-w-7 rounded-full">
-                                                                        <CakeSlice size={20} className="text-brown-700" />
-                                                                    </Badge>
-                                                                )}
-                                                            </CardContent>
-                                                        </Card>
-                                                    </div>
+                                        <DetailCard {...drink} />
 
-                                                    <DialogDescription className="text-foreground text-xl font-semibold">
-                                                        <p>
-                                                            <strong className="text-foreground text-xl font-semibold">Price:</strong> RM{' '}
-                                                            {Number(drink.price).toFixed(2)}
-                                                        </p>
-                                                        <Separator className="my-2" />
-                                                        <p className="text-muted-foreground">
-                                                            <strong className="text-foreground text-xl font-semibold">Description:</strong>{' '}
-                                                            {drink.description || 'No description provided.'}
-                                                        </p>
-                                                    </DialogDescription>
-                                                </DialogHeader>
-                                                <DialogFooter>
-                                                    <DialogClose asChild>
-                                                        <Button variant="outline" className="w-full px-4 py-2 text-base sm:w-auto">
-                                                            Close
-                                                        </Button>
-                                                    </DialogClose>
-                                                </DialogFooter>
-                                            </DialogContent>
-                                        </Dialog>
-
-                                        {/* ✏️ Edit Button */}
-                                        {/* <button
-                                            onClick={() => startEdit(drink)}
-                                            className="rounded-full p-2 text-blue-500 transition-colors hover:bg-blue-100"
-                                            title="Edit"
-                                        >
-                                            <Pen size={18} strokeWidth={1.8} />
-                                        </button> */}
-
-                                        <AlertDialog open={open} onOpenChange={setOpen}>
-                                            <AlertDialogTrigger asChild>
-                                                <button
-                                                    onClick={() => startEdit(drink)}
-                                                    className="rounded-full p-2 text-blue-500 transition-colors hover:bg-blue-100"
-                                                    title="Edit"
-                                                >
-                                                    <Pen size={18} strokeWidth={1.8} />
-                                                </button>
-                                            </AlertDialogTrigger>
-
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Edit Drink</AlertDialogTitle>
-                                                </AlertDialogHeader>
-
-                                                {/* ✏️ Edit Form */}
-                                                <div className="mt-2 space-y-3">
-                                                    <div>
-                                                        <label className="text-sm">Name</label>
-                                                        <input
-                                                            value={data.name}
-                                                            onChange={(e) => setData('name', e.target.value)}
-                                                            className="w-full rounded-md border p-2"
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className="text-sm">Category</label>
-                                                        <select
-                                                            value={data.category}
-                                                            onChange={(e) => setData('category', e.target.value)}
-                                                            className="w-full rounded-md border p-2"
-                                                        >
-                                                            <option value="Coffee">Coffee</option>
-                                                            <option value="Soda">Soda</option>
-                                                            <option value="Chocolate">Chocolate</option>
-                                                            <option value="Matcha">Matcha</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div>
-                                                        <label className="text-sm">Price (RM)</label>
-                                                        <input
-                                                            type="number"
-                                                            value={data.price}
-                                                            onChange={(e) => setData('price', Number(e.target.value))}
-                                                            className="w-full rounded-md border p-2"
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className="text-sm">Description</label>
-                                                        <textarea
-                                                            value={data.description}
-                                                            onChange={(e) => setData('description', e.target.value)}
-                                                            className="w-full rounded-md border p-2"
-                                                        />
-                                                    </div>
-                                                </div>
-
-                                                <AlertDialogFooter className="mt-4">
-                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={editSubmit}>Save Changes</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        {/* ✨ Edit Drink Button */}
+                                        <EditDialog
+                                            open={open}
+                                            setOpen={setOpen}
+                                            title="Edit Drink🍹"
+                                            onSubmit={editSubmit}
+                                            trigger={
+                                                <Button onClick={() => startEdit(drink)} className="rounded-full p-2 text-blue-500 hover:bg-blue-100">
+                                                    <Pen size={18} />
+                                                </Button>
+                                            }
+                                            children={
+                                                <EditForm data={data} setData={setData} categories={categories} showDescription={showDescription} />
+                                            }
+                                        />
 
                                         {/* 🗑️ Delete Button */}
                                         <AlertDialog>
