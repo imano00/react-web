@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { CakeSlice, Coffee, CupSoda, Eye, Leaf } from 'lucide-react';
-import { Badge } from '../ui/badge';
+import { Eye } from 'lucide-react';
 import { Card, CardContent } from '../ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Separator } from '../ui/separator';
+import { CategoryBadge } from './category-badge';
 
 type DetailCardProps = {
     name: string;
@@ -30,34 +30,27 @@ export default function DetailCard({ name, category, price, description, unit, c
                         <Card className="border-muted shadow-sm">
                             <CardContent className="flex items-center">
                                 <p className="text-md px-2 font-medium capitalize">{category}</p>
-                                {(category === 'coffee' || category === 'Coffee') && (
-                                    <Badge className="h-7 min-w-7 rounded-full">
-                                        <Coffee size={20} />
-                                    </Badge>
-                                )}
-                                {(category === 'soda' || category === 'Soda') && (
-                                    <Badge className="h-7 min-w-7 rounded-full">
-                                        <CupSoda size={20} className="text-sky-500" />
-                                    </Badge>
-                                )}
-                                {(category === 'matcha' || category === 'Matcha') && (
-                                    <Badge className="h-7 min-w-7 rounded-full">
-                                        <Leaf size={20} className="text-green-600" />
-                                    </Badge>
-                                )}
-                                {(category === 'chocolate' || category === 'Chocolate') && (
-                                    <Badge className="h-7 min-w-7 rounded-full">
-                                        <CakeSlice size={20} className="text-brown-700" />
-                                    </Badge>
-                                )}
+                                <CategoryBadge category={category} />
                             </CardContent>
                         </Card>
                     </div>
 
                     <DialogDescription className="text-foreground text-xl font-semibold">
-                        <p>
-                            <strong className="text-foreground text-xl font-semibold">Price:</strong> RM {Number(price).toFixed(2)}
-                        </p>
+                        {price !== undefined && (
+                            <p>
+                                <strong className="text-foreground text-xl font-semibold">Price:</strong> RM {Number(price).toFixed(2)}
+                            </p>
+                        )}
+                        {current_stock !== undefined && reorder_level !== undefined && (
+                            <div>
+                                <p>
+                                    <strong className="text-foreground text-xl font-semibold">Quantity:</strong> {current_stock} {unit}
+                                </p>
+                                <p>
+                                    <strong className="text-foreground text-xl font-semibold">Reorder Level:</strong> {reorder_level} {unit}
+                                </p>
+                            </div>
+                        )}
                         <Separator className="my-2" />
                         <p className="text-muted-foreground">
                             <strong className="text-foreground text-xl font-semibold">Description:</strong>{' '}
