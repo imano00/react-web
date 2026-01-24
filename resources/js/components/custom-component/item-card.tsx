@@ -1,17 +1,72 @@
 import { InventoryItem } from '@/types/InventoryItem';
+import { useForm } from '@inertiajs/react';
+import { Pen } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import DetailCard from './detail-card';
+import EditDialog from './edit-dialog';
+import EditForm from './edit-form';
 
-type Props = {
+type ItemCardProps = {
     item: InventoryItem;
     onEdit: (item: InventoryItem) => void;
     onDelete: (id: number) => void;
 };
 
-export function ItemCard({ item, onEdit, onDelete }: Props) {
-    const isLowStock = item.reorder_level !== undefined && item.quantity <= item.reorder_level;
+export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
+    const isLowStock = item.reorder_level !== undefined && item.current_stock <= item.reorder_level;
+
+    const {
+        data,
+        setData,
+        post,
+        reset,
+        put,
+        delete: destroy,
+    } = useForm({
+        id: item.id,
+        name: '',
+        category: '',
+        unit: '',
+        current_stock: 0,
+        reorder_level: 0,
+        description: '',
+    });
+
+    const [open, setOpen] = useState(false);
+    const [editingDrink, setEditingDrink] = useState<null | number>(null);
+    const [categories, setCategories] = useState([]);
+    const [showDescription, setShowDescription] = useState(false);
+
+    const startEdit = (InventoryItem: InventoryItem) => {
+        setEditingDrink(InventoryItem.id);
+        setData({
+            name: InventoryItem.name,
+            category: InventoryItem.category,
+            unit: InventoryItem.unit,
+            current_stock: InventoryItem.current_stock,
+            reorder_level: InventoryItem.reorder_level,
+            description: InventoryItem.description || '',
+        });
+        setOpen(true);
+    };
+
+    const editSubmit = (e: React.FormEvent) => {
+        try {
+            e.preventDefault();
+            console.log('Updating item:', data);
+            put(route('item.update', { id: data.id }), {
+                onSuccess: () => {
+                    (setEditingDrink(null), toast.success('Edit saved successfully! 💛'), setOpen(false));
+                },
+            });
+        } catch (e) {
+            console.error('Error updating drink:', e);
+        }
+    };
     return (
         <Card className="rounded-2xl shadow-md">
             <CardContent className="space-y-2">
@@ -22,16 +77,25 @@ export function ItemCard({ item, onEdit, onDelete }: Props) {
                     </span>
                 </div>
                 <p className="text-sm opacity-70">
-                    Current Stock: {item.quantity} {item.unit}
+                    Current Stock: {item.current_stock} {item.unit}
                 </p>
                 <p className="text-sm opacity-70">
                     Reorder Level: {item.reorder_level} {item.unit}
                 </p>
                 <div className="flex gap-2">
                     <DetailCard {...item} />
-                    <Button onClick={() => onEdit(item)} className="rounded-2xl text-blue-500 hover:bg-blue-100">
-                        Edit
-                    </Button>
+                    <EditDialog
+                        open={open}
+                        setOpen={setOpen}
+                        title="Edit Item"
+                        onSubmit={editSubmit}
+                        trigger={
+                            <Button onClick={() => startEdit(item)} className="rounded-full p-2 text-blue-500 hover:bg-blue-100">
+                                <Pen size={18} />
+                            </Button>
+                        }
+                        children={<EditForm data={data} setData={setData} categories={categories} showDescription={showDescription} />}
+                    />
                     <Button onClick={() => onDelete(item.id)} className="rounded-2xl text-red-500 hover:bg-red-100">
                         Delete
                     </Button>
