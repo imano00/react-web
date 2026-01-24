@@ -15,4 +15,22 @@ class InventoryController extends Controller
             'initialItems' => $inventoryItems
         ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $item = InventoryItem::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'unit' => 'required|string|max:50',
+            'current_stock' => 'required|numeric|min:0',
+            'reorder_level' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+        ]);
+
+        $item->update($validatedData);
+
+        return redirect()->route('inventory.index')->with('success', 'Inventory item updated successfully.');
+    }
 }
