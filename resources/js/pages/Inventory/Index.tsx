@@ -13,20 +13,27 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type Category = {
+    id: number;
+    name: string;
+    subcategories: { id: number; name: string }[];
+};
 type InventoryItem = {
     id: number;
     name: string;
-    category: string;
+    subcategory_id: number;
     unit: string;
     quantity: number;
     reorder_level: number;
 };
 
-export default function Index({ initialItems }: { initialItems: InventoryItem[] }) {
+export default function Index({ initialItems, categories }: { initialItems: InventoryItem[]; categories: Category[] }) {
     const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
     const [items, setItems] = useState<InventoryItem[]>(initialItems);
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
+    const [open, setOpen] = useState(false);
+    const [onOpenChange, setOnOpenChange] = useState<(open: boolean) => void>();
 
     const handleEdit = (item: InventoryItem) => {
         setEditingItem(item);
@@ -52,7 +59,7 @@ export default function Index({ initialItems }: { initialItems: InventoryItem[] 
                 {/* Search & Add */}
                 <div className="flex items-center gap-4">
                     <SearchBar placeholder="Search item" value={search} onChange={setSearch} className="w-full" />
-                    <AddInventoryItemDialog />
+                    <AddInventoryItemDialog categories={categories ?? []} open={open} onOpenChange={setOpen} />
                 </div>
 
                 {/* Inventory List */}
