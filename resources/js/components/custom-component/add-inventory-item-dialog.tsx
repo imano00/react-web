@@ -9,27 +9,44 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '../textarea';
 import { Button } from '../ui/button';
 import { Field, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
 
-export default function AddInventoryItemDialog() {
-    const [open, setOpen] = useState(false);
+interface Category {
+    id: number;
+    name: string;
+    subcategories: { id: number; name: string }[];
+}
 
-    const { data, setData, post, reset } = useForm({
+interface AddInventoryItemDialogProps {
+    categories: Category[];
+    open: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
+export default function AddInventoryItemDialog({ categories = [], open, onOpenChange }: AddInventoryItemDialogProps) {
+    const { data, setData, post, reset, processing, errors } = useForm({
         name: '',
-        category: '',
+        subcategory_id: '',
         unit: '',
         current_stock: 0,
         reorder_level: 0,
         description: '',
     });
+
+    const [name, setName] = useState('');
+    const [subcategoryId, setSubcategoryId] = useState<number | null>(null);
+    const [unit, setUnit] = useState('');
+    const [currentStock, setCurrentStock] = useState(0);
+    const [reorderLevel, setReorderLevel] = useState(0);
+    const [description, setDescription] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [openDialog, setOpen] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,11 +54,14 @@ export default function AddInventoryItemDialog() {
         post(route('inventory-items.store'), {
             onSuccess: () => {
                 toast.success('New inventory item added!');
-                setOpen(false); // close dialog
-                reset(); // clear form
+                setOpen(false);
+                reset();
+                setSelectedCategory(null);
             },
         });
     };
+
+    const filteredSubcategories = selectedCategory ? (categories.find((cat) => cat.id === selectedCategory)?.subcategories ?? []) : [];
 
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
@@ -64,17 +84,42 @@ export default function AddInventoryItemDialog() {
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="category">Category</FieldLabel>
-                                <Select value={data.category} onValueChange={(v) => setData('category', v)}>
-                                    <SelectTrigger className="w-full">
+                                {/* Category Select */}
+                                <Select
+                                    value={selectedCategory?.toString() ?? ''}
+                                    onValueChange={(val) => {
+                                        const catId = Number(val) || null;
+                                        setSelectedCategory(catId);
+                                        setData('subcategory_id', ''); // Reset subcategory when category changes
+                                    }}
+                                >
+                                    <SelectTrigger className="w-full rounded border p-2">
                                         <SelectValue placeholder="Select Category" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem value="Raw Ingredient">Coffee</SelectItem>
-                                            <SelectItem value="Material">Material</SelectItem>
-                                            <SelectItem value="Packaging">Packaging</SelectItem>
-                                            <SelectItem value="Others">Others</SelectItem>
-                                        </SelectGroup>
+                                        {categories?.map((cat) => (
+                                            <SelectItem key={cat.id} value={cat.id.toString()}>
+                                                {cat.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
+                                {/* Subcategory Select */}
+                                <Select
+                                    value={data.subcategory_id?.toString() ?? ''}
+                                    onValueChange={(val) => setData('subcategory_id', val)}
+                                    disabled={!selectedCategory}
+                                >
+                                    <SelectTrigger className="w-full rounded border p-2">
+                                        <SelectValue placeholder="Select Subcategory" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {filteredSubcategories?.map((sub) => (
+                                            <SelectItem key={sub.id} value={sub.id.toString()}>
+                                                {sub.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </Field>
