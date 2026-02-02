@@ -6,7 +6,7 @@ type EditDialogProps = {
     setOpen: (open: boolean) => void;
     title: string;
     trigger?: React.ReactNode;
-    onSubmit: () => void;
+    onSubmit: (e: React.FormEvent) => void;
     children: React.ReactNode;
 };
 

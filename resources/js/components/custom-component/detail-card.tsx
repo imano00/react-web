@@ -3,19 +3,19 @@ import { Eye } from 'lucide-react';
 import { Card, CardContent } from '../ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Separator } from '../ui/separator';
-import { CategoryBadge } from './category-badge';
 
 type DetailCardProps = {
     name: string;
-    category: string;
+    category?: string;
+    subcategory_id?: number;
     price?: number;
     unit?: string;
     current_stock?: number;
     reorder_level?: number;
-    description?: string;
+    description?: string | null;
 };
 
-export default function DetailCard({ name, category, price, description, unit, current_stock, reorder_level }: DetailCardProps) {
+export default function DetailCard({ name, category, price, description, unit, current_stock, reorder_level, subcategory_id }: DetailCardProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -29,8 +29,10 @@ export default function DetailCard({ name, category, price, description, unit, c
                         <DialogTitle className="text-foreground text-xl font-semibold">{name}</DialogTitle>
                         <Card className="border-muted shadow-sm">
                             <CardContent className="flex items-center">
-                                <p className="text-md px-2 font-medium capitalize">{category}</p>
-                                <CategoryBadge category={category} />
+                                {subcategory_id !== undefined && <p className="text-md px-2 font-medium capitalize">{subcategory_id.toString()}</p>}
+                                {category !== undefined && <p className="text-md px-2 font-medium capitalize">{category}</p>}
+
+                                {/* <CategoryBadge category={category} /> */}
                             </CardContent>
                         </Card>
                     </div>

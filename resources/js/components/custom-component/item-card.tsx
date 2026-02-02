@@ -29,7 +29,7 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
     } = useForm({
         id: item.id,
         name: '',
-        category: '',
+        subcategory_id: item.subcategory_id,
         unit: '',
         current_stock: 0,
         reorder_level: 0,
@@ -45,7 +45,7 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
         setEditingDrink(InventoryItem.id);
         setData({
             name: InventoryItem.name,
-            category: InventoryItem.category,
+            subcategory_id: InventoryItem.subcategory_id,
             unit: InventoryItem.unit,
             current_stock: InventoryItem.current_stock,
             reorder_level: InventoryItem.reorder_level,
@@ -84,11 +84,15 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
                 </p>
                 <div className="flex gap-2">
                     <DetailCard {...item} />
+                    <div>
+                        <h2 className="flex-1" />
+                        {item.subcategory_id.toString()}
+                    </div>
                     <EditDialog
                         open={open}
                         setOpen={setOpen}
                         title="Edit Item"
-                        onSubmit={editSubmit}
+                        onSubmit={(e) => editSubmit(e)}
                         trigger={
                             <Button onClick={() => startEdit(item)} className="rounded-full p-2 text-blue-500 hover:bg-blue-100">
                                 <Pen size={18} />
