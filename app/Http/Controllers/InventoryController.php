@@ -11,11 +11,9 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $inventoryItems = InventoryItem::all(); // Fetch inventory items from the database
-        $categories = Category::with('subcategories')->get();
+        $inventoryItems = InventoryItem::with('subcategory')->get(); // Fetch inventory items from the database        
         return inertia('Inventory/Index', [
-            'initialItems' => $inventoryItems,
-            'categories' => $categories,
+            'initialItems' => $inventoryItems,            
         ]);
     }
 
