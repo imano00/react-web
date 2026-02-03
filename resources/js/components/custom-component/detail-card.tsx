@@ -3,11 +3,16 @@ import { Eye } from 'lucide-react';
 import { Card, CardContent } from '../ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Separator } from '../ui/separator';
+import { CategoryBadge } from './category-badge';
 
+type Subcategory = {
+    id: number;
+    name: string;
+};
 type DetailCardProps = {
     name: string;
-    category?: string;
     subcategory_id?: number;
+    subcategory: Subcategory;
     price?: number;
     unit?: string;
     current_stock?: number;
@@ -15,7 +20,7 @@ type DetailCardProps = {
     description?: string | null;
 };
 
-export default function DetailCard({ name, category, price, description, unit, current_stock, reorder_level, subcategory_id }: DetailCardProps) {
+export default function DetailCard({ name, price, description, unit, current_stock, reorder_level, subcategory_id, subcategory }: DetailCardProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -29,10 +34,8 @@ export default function DetailCard({ name, category, price, description, unit, c
                         <DialogTitle className="text-foreground text-xl font-semibold">{name}</DialogTitle>
                         <Card className="border-muted shadow-sm">
                             <CardContent className="flex items-center">
-                                {subcategory_id !== undefined && <p className="text-md px-2 font-medium capitalize">{subcategory_id.toString()}</p>}
-                                {category !== undefined && <p className="text-md px-2 font-medium capitalize">{category}</p>}
-
-                                {/* <CategoryBadge category={category} /> */}
+                                {subcategory_id !== undefined && <p className="text-md px-2 font-medium capitalize">{subcategory?.name}</p>}
+                                <CategoryBadge subcategory={subcategory?.name} />
                             </CardContent>
                         </Card>
                     </div>

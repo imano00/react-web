@@ -1,11 +1,11 @@
 import { CakeSlice, Coffee, Croissant, CupSoda, Donut, Droplets, GlassWater, IceCream, Leaf, Milk, Package, Sandwich, SprayCan } from 'lucide-react';
 
 type CategoryBadgeProps = {
-    category: string;
+    subcategory: string;
 };
 
-export function CategoryBadge({ category }: CategoryBadgeProps) {
-    const normalized = category.trim().toLowerCase();
+export function CategoryBadge({ subcategory }: CategoryBadgeProps) {
+    const normalized = subcategory.trim().toLowerCase();
 
     if (normalized === 'coffee') return <Coffee size={20} className="text-amber-700" />;
     if (normalized === 'soda') return <CupSoda size={20} className="text-sky-500" />;

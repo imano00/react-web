@@ -5,9 +5,14 @@ import { Textarea } from '../textarea';
 import { Field, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
 
+type Subcategory = {
+    id: number;
+    name: string;
+};
 type EditFormData = {
     name: string;
-    category: string;
+    subcategory_id?: number;
+    subcategory?: Subcategory;
     price?: number;
     description?: string;
     unit?: string;
@@ -59,7 +64,7 @@ export default function EditForm({ data, setData, categories, showDescription }:
                 {/* Category Field */}
                 <Field>
                     <FieldLabel htmlFor="category">Category</FieldLabel>
-                    <Select value={data.category} onValueChange={(v) => setData('category', v)}>
+                    <Select value={data.subcategory_id?.toString() ?? ''} onValueChange={(v) => setData('subcategory_id', Number(v))}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select Category" />
                         </SelectTrigger>

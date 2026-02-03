@@ -84,10 +84,6 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
                 </p>
                 <div className="flex gap-2">
                     <DetailCard {...item} />
-                    <div>
-                        <h2 className="flex-1" />
-                        {item.subcategory_id.toString()}
-                    </div>
                     <EditDialog
                         open={open}
                         setOpen={setOpen}
