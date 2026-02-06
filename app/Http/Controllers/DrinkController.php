@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Drink;
+use App\Models\Subcategory;
+use App\Models\Category;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 
 class DrinkController extends Controller
@@ -13,18 +16,23 @@ class DrinkController extends Controller
      */
     public function index()
     {
-        $drinks = Drink::all();
-        return inertia('Drinks/Index', ['drinks' => $drinks]);
+        
+       return Inertia::render('Drinks/Index', [
+        'drinks' => Drink::with('subcategory.category')->get(),
+        'categories' => Category::with('subcategories')->get(),
+    ]);
         // below code are used to test retrieval data without front end
         // return response()->json($drinks);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return inertia('Drinks/Create');
+         return Inertia::render('Drinks/Create', [
+            'categories' => Category::with('subcategories')->get(),
+        ]);
     }
 
     /**
@@ -34,7 +42,7 @@ class DrinkController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
+            'subcategory_id' => 'required|exists:subcategories,id',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
         ]);
@@ -65,16 +73,30 @@ class DrinkController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $drink = Drink::findOrFail($id);
+        $drink = Drink::with('subcategory.category.subcategories')->findOrFail($id);
 
-        $request->validate([
-            'name' => 'required',
-            'category' => 'required',
-            'price' => 'required',
-            'description' => 'nullable',
+        // Validation
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'subcategory_id' => 'required|exists:subcategories,id',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
         ]);
 
-        $drink->update($request->all());
+         // 2️⃣ OPTIONAL SAFETY CHECK (this is the part you asked about 💕)
+        $subcategory = Subcategory::where('id', $validated['subcategory_id'])
+        ->whereHas('category', function ($q) {
+            $q->where('name', 'drinks');
+        })
+        ->firstOrFail();
+
+        // 3️⃣ Update using the verified subcategory
+        $drink->update([
+            'name' => $validated['name'],
+            'subcategory_id' => $subcategory->id,
+            'price' => $validated['price'],
+            'description' => $validated['description'] ?? null,
+        ]);
 
         return redirect()->route('drinks.index')->with('success', 'Drink updated successfully!');
     }
