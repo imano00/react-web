@@ -55,7 +55,6 @@ export default function Index({ initialItems, categories }: { initialItems: Inve
             <Head title="Inventory" />
             <div className="space-y-6 p-6">
                 <h1 className="text-3xl font-semibold">Inventory</h1>
-
                 {/* Search & Add */}
                 <div className="flex items-center gap-4">
                     <SearchBar placeholder="Search item" value={search} onChange={setSearch} className="w-full" />
