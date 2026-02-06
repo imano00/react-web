@@ -21,6 +21,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/drinks', [DrinkController::class, 'index'])->name('drinks.index');
 
+    // Route::get('/drinks/create', [DrinkController::class, 'create'])->name('drinks.create');
+
     Route::put('/drinks/{id}', [DrinkController::class, 'update'])->name('drinks.update');
 
     Route::delete('/drinks/{id}', [DrinkController::class, 'destroy'])->name('drinks.destroy');
