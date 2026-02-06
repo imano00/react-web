@@ -16,4 +16,8 @@ class SubCategory extends Model
     {
         return $this->hasMany(InventoryItem::class);
     }
+    public function drinks()
+    {
+        return $this->hasMany(Drink::class);
+    }
 }

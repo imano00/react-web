@@ -11,8 +11,12 @@ class Drink extends Model
 
     protected $fillable = [
         'name',
-        'category',
+        'subcategory_id',
         'price',
         'description',
     ];
+
+    public function subcategory(){
+        return $this->belongsTo(SubCategory::class, 'subcategory_id');
+    }
 }
