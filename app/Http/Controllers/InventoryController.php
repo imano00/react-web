@@ -14,6 +14,8 @@ class InventoryController extends Controller
         $inventoryItems = InventoryItem::with('subcategory')->get(); // Fetch inventory items from the database        
         return inertia('Inventory/Index', [
             'initialItems' => $inventoryItems,            
+            'drinks' => InventoryItem::with('subcategory.category')->get(),
+            'categories' => Category::with('subcategories')->get(),
         ]);
     }
 
