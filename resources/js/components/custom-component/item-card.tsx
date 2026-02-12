@@ -8,7 +8,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import DetailCard from './detail-card';
 import EditDialog from './edit-dialog';
-import EditForm from './edit-form';
+import { ItemForm } from './item-form';
 
 type ItemCardProps = {
     item: InventoryItem;
@@ -84,7 +84,7 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
                 </p>
                 <div className="flex gap-2">
                     <DetailCard {...item} />
-                    <EditDialog
+                    {/* <EditDialog
                         open={open}
                         setOpen={setOpen}
                         title="Edit Item"
@@ -95,6 +95,19 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
                             </Button>
                         }
                         children={<EditForm data={data} setData={setData} categories={categories} showDescription={showDescription} />}
+                    /> */}
+                    <EditDialog
+                        title="Edit Drink🍹"
+                        onSubmit={editSubmit}
+                        trigger={
+                            <Button onClick={() => startEdit(item)} className="rounded-full p-2 text-blue-500 hover:bg-blue-100">
+                                <Pen size={18} />
+                            </Button>
+                        }
+                        children={
+                            // <EditForm data={data} setData={setData} categories={categories} showDescription={showDescription} />
+                            <ItemForm data={data} setData={setData} categories={categories} mode="edit" />
+                        }
                     />
                     <Button onClick={() => onDelete(item.id)} className="rounded-2xl text-red-500 hover:bg-red-100">
                         Delete
