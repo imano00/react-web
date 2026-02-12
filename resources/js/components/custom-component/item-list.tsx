@@ -8,7 +8,7 @@ type Props = {
 
 export function ItemList({ items, onEdit, onDelete }: Props) {
     if (items.length === 0) {
-        return <p className="text-sm text-gray-500">No ingredients yet 🥲</p>;
+        return <p className="text-sm text-gray-500">No items yet 🥲</p>;
     }
 
     return (
