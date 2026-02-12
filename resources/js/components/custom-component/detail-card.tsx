@@ -8,11 +8,19 @@ import { CategoryBadge } from './category-badge';
 type Subcategory = {
     id: number;
     name: string;
+    category: { id: number; name: string };
+};
+
+type Category = {
+    id: number;
+    name: string;
+    subcategories: Subcategory[];
 };
 type DetailCardProps = {
     name: string;
-    subcategory_id?: number;
+    subcategory_id: number;
     subcategory: Subcategory;
+    category: Category;
     price?: number;
     unit?: string;
     current_stock?: number;
@@ -20,7 +28,17 @@ type DetailCardProps = {
     description?: string | null;
 };
 
-export default function DetailCard({ name, price, description, unit, current_stock, reorder_level, subcategory_id, subcategory }: DetailCardProps) {
+export default function DetailCard({
+    name,
+    price,
+    description,
+    unit,
+    current_stock,
+    reorder_level,
+    subcategory_id,
+    subcategory,
+    category,
+}: DetailCardProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -34,8 +52,10 @@ export default function DetailCard({ name, price, description, unit, current_sto
                         <DialogTitle className="text-foreground text-xl font-semibold">{name}</DialogTitle>
                         <Card className="border-muted shadow-sm">
                             <CardContent className="flex items-center">
-                                {subcategory_id !== undefined && <p className="text-md px-2 font-medium capitalize">{subcategory?.name}</p>}
-                                <CategoryBadge subcategory={subcategory?.name} />
+                                {subcategory_id !== undefined && (
+                                    <p className="text-md px-2 font-medium capitalize">{subcategory?.name || 'Subcategory unavailable'}</p>
+                                )}
+                                <CategoryBadge subcategory={subcategory?.name || 'Subcategory unavailable'} />
                             </CardContent>
                         </Card>
                     </div>
