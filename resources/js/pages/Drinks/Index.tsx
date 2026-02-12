@@ -1,7 +1,7 @@
 import AddDrinkDialog from '@/components/custom-component/add-drink-dialog';
 import DetailCard from '@/components/custom-component/detail-card';
+import { DrinkForm } from '@/components/custom-component/drink-form';
 import EditDialog from '@/components/custom-component/edit-dialog';
-import EditForm from '@/components/custom-component/edit-form';
 import SearchBar from '@/components/custom-component/search-bar';
 import {
     AlertDialog,
@@ -33,21 +33,35 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type Subcategory = {
+    id: number;
+    name: string;
+    category: { id: number; name: string };
+};
+
+type Category = {
+    id: number;
+    name: string;
+    subcategories: Subcategory[];
+};
+
 interface Drink {
     id: number;
     name: string;
-    category: string;
+    subcategory_id: number;
+    subcategory: Subcategory;
+    subcategories: Subcategory[];
+    category: Category;
     price: number;
     description?: string;
 }
 
-export default function Index({ drinks }: { drinks: Drink[] }) {
+export default function Index({ drinks, categories }: { drinks: Drink[]; categories: Category[] }) {
     const [editingDrink, setEditingDrink] = useState<null | number>(null);
     const [deleteDrink, setDeleteDrink] = useState<null | number>(null);
     const [open, setOpen] = useState(false);
     const [category, setCategory] = useState('All');
-    const [search, setSearch] = useState('');
-    const [categories] = useState<string[]>([]); // Define categories here
+    const [search, setSearch] = useState(''); // Define categories here
     const [showDescription] = useState(true);
 
     const {
@@ -59,7 +73,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
         delete: destroy,
     } = useForm({
         name: '',
-        category: '',
+        subcategory_id: 0,
         price: 0,
         description: '',
     });
@@ -68,7 +82,7 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
         setEditingDrink(drink.id);
         setData({
             name: drink.name,
-            category: drink.category,
+            subcategory_id: drink.subcategory_id,
             price: drink.price,
             description: drink.description || '',
         });
@@ -89,48 +103,11 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
         }
     };
 
-    // const submitUpdate = async () => {
-    //     await fetch(`/api/drinks/${editingDrink}`, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(data),
-    //     });
-
-    //     setOpen(false);
-    // };
-
-    const handleDelete = (id: number) => {
-        if (confirm('Are you sure you want to delete this drink? 😢')) {
-            destroy(route('drinks.destroy', id), {
-                onSuccess: () => console.log('Drink deleted successfully'),
-            });
-        }
-    };
-
-    /**
-     * Handles the form submission for creating a new drink.
-     * Prevents the default form submission behavior and posts the form data to the specified Laravel route.
-     * @param {React.FormEvent} e - The form submission event.
-     */
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        post(route('drinks.store'), {
-            onSuccess: () => {
-                toast.success('New drink added! 🧋');
-                setOpen(false); // close dialog
-                reset(); // reset fields
-            },
-        });
-    };
-
     // Filter drinks based on search and category
     const filteredDrinks = drinks.filter((drink) => {
         const matchesSearch = drink.name.toLowerCase().includes(search.toLowerCase());
 
-        const matchesCategory = category === 'All' || drink.category === category;
+        const matchesCategory = category === 'All' || drink.subcategory?.id === Number(category);
 
         return matchesSearch && matchesCategory;
     });
@@ -141,7 +118,26 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
             <Card className="border-muted mx-4 mb-4 border shadow-sm">
                 <CardHeader className="flex flex-row items-center justify-around">
                     <CardTitle className="w-full text-lg font-semibold">Drink List 🧋</CardTitle>
-                    {/* ✨ Filter by Category */}
+                    {/* ✨ Filter by Subcategory (under Drinks) */}
+                    {/* <Select value={category} onValueChange={setCategory}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Filter by Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="All">All</SelectItem>
+                                {categories
+                                    .find((c) => c.name === 'Drinks')
+                                    ?.subcategories.map((sub) => (
+                                        <SelectItem key={sub.id} value={sub.name}>
+                                            {sub.name.charAt(0).toUpperCase() + sub.name.slice(1)}
+                                        </SelectItem>
+                                    ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select> */}
+
+                    {/* ✨ Filter by Subcategory (under Drinks) */}
                     <Select value={category} onValueChange={setCategory}>
                         <SelectTrigger>
                             <SelectValue placeholder="Filter by Category" />
@@ -149,17 +145,21 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                         <SelectContent>
                             <SelectGroup>
                                 <SelectItem value="All">All</SelectItem>
-                                <SelectItem value="Coffee">Coffee</SelectItem>
-                                <SelectItem value="Soda">Soda</SelectItem>
-                                <SelectItem value="Chocolate">Chocolate</SelectItem>
-                                <SelectItem value="Matcha">Matcha</SelectItem>
+                                {categories
+                                    .find((c) => c.name === 'Drinks')
+                                    ?.subcategories.map((sub) => (
+                                        <SelectItem key={sub.id} value={sub.id.toString()}>
+                                            {sub.name.charAt(0).toUpperCase() + sub.name.slice(1)}
+                                        </SelectItem>
+                                    ))}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
+
                     <SearchBar value={search} onChange={setSearch} placeholder="Search drinks" className="mx-2 w-full" />
 
                     {/* ✨ Add New Drink Button */}
-                    <AddDrinkDialog />
+                    <AddDrinkDialog categories={categories} />
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -177,7 +177,11 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                 <TableRow key={drink.id}>
                                     <TableCell>{drink.id}</TableCell>
                                     <TableCell>{drink.name}</TableCell>
-                                    <TableCell>{drink.category}</TableCell>
+                                    <TableCell>
+                                        {drink.subcategory?.name
+                                            ? drink.subcategory.name.charAt(0).toUpperCase() + drink.subcategory.name.slice(1)
+                                            : 'N/A'}
+                                    </TableCell>
                                     <TableCell>{Number(drink.price).toFixed(2)}</TableCell>
                                     <TableCell className="space-x-1 text-center">
                                         {/* ✨ View Details Button */}
@@ -185,8 +189,6 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
 
                                         {/* ✨ Edit Drink Button */}
                                         <EditDialog
-                                            open={open}
-                                            setOpen={setOpen}
                                             title="Edit Drink🍹"
                                             onSubmit={editSubmit}
                                             trigger={
@@ -195,7 +197,8 @@ export default function Index({ drinks }: { drinks: Drink[] }) {
                                                 </Button>
                                             }
                                             children={
-                                                <EditForm data={data} setData={setData} categories={categories} showDescription={showDescription} />
+                                                // <EditForm data={data} setData={setData} categories={categories} showDescription={showDescription} />
+                                                <DrinkForm data={data} setData={setData} categories={categories} mode="edit" />
                                             }
                                         />
 
