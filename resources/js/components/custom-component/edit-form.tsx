@@ -1,17 +1,28 @@
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { Textarea } from '../textarea';
 import { Field, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
+import { CategorySubcategorySelect } from './category-subcategory-select';
 
 type Subcategory = {
     id: number;
     name: string;
+    category: { id: number; name: string };
 };
+
+type Category = {
+    id: number;
+    name: string;
+    subcategories: Subcategory[];
+};
+
 type EditFormData = {
     name: string;
     subcategory_id?: number;
+    category?: Category;
     subcategory?: Subcategory;
     price?: number;
     description?: string;
@@ -21,13 +32,20 @@ type EditFormData = {
 };
 
 type EditFormProps = {
-    data: EditFormData;
+    editData: EditFormData;
     setData: <K extends keyof EditFormData>(key: K, value: EditFormData[K]) => void;
-    categories?: string[];
     showDescription?: boolean;
 };
 
-export default function EditForm({ data, setData, categories, showDescription }: EditFormProps) {
+export default function EditForm({ editData }: EditFormProps) {
+    const [data, setData] = useForm<EditFormData>({
+        name: editData.name,
+        category: editData.category,
+        subcategory_id: editData.subcategory_id,
+        price: editData.price,
+        description: editData.description,
+    });
+
     const [price, setPrice] = useState<number>(data.price || 0);
     const incrementPrice = (amount: number) => {
         setData('price', Number((Number(data.price ?? 0) + amount).toFixed(2)));
@@ -52,6 +70,7 @@ export default function EditForm({ data, setData, categories, showDescription }:
     const decrementReorderLevel = (amount: number) => {
         setData('reorder_level', Number((Number(data.reorder_level ?? 0) - amount).toFixed(2)));
     };
+
     return (
         <FieldGroup>
             <FieldSet>
@@ -60,23 +79,30 @@ export default function EditForm({ data, setData, categories, showDescription }:
                     <FieldLabel htmlFor="name">Name</FieldLabel>
                     <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} />
                 </Field>
-
                 {/* Category Field */}
                 <Field>
                     <FieldLabel htmlFor="category">Category</FieldLabel>
-                    <Select value={data.subcategory_id?.toString() ?? ''} onValueChange={(v) => setData('subcategory_id', Number(v))}>
+                    {/* <Select value={data.subcategory_id?.toString() ?? ''} onValueChange={(v) => setData('subcategory_id', Number(v))}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select Category" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="Coffee">Coffee</SelectItem>
-                                <SelectItem value="Soda">Soda</SelectItem>
-                                <SelectItem value="Chocolate">Chocolate</SelectItem>
-                                <SelectItem value="Matcha">Matcha</SelectItem>
+                                {data.category?.subcategories.map((subcategory) => (
+                                    <SelectItem key={subcategory.id} value={subcategory.id.toString()}>
+                                        {subcategory.name.charAt(0).toUpperCase() + subcategory.name.slice(1)}
+                                    </SelectItem>
+                                ))}
                             </SelectGroup>
                         </SelectContent>
-                    </Select>
+                    </Select> */}
+                    {data.category && (
+                        <CategorySubcategorySelect
+                            category={data.category}
+                            value={data.subcategory_id}
+                            onChange={(id) => setData('subcategory_id', id)}
+                        />
+                    )}
                 </Field>
 
                 {/* Price Field */}
@@ -146,7 +172,6 @@ export default function EditForm({ data, setData, categories, showDescription }:
                         </InputGroup>
                     </Field>
                 )}
-
                 {/* Reorder Level Field */}
                 {data.reorder_level !== undefined && (
                     <Field>
@@ -171,14 +196,11 @@ export default function EditForm({ data, setData, categories, showDescription }:
                         </InputGroup>
                     </Field>
                 )}
-
                 {/* Description (optional) */}
-                {showDescription && (
-                    <Field>
-                        <FieldLabel htmlFor="description">Description</FieldLabel>
-                        <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} />
-                    </Field>
-                )}
+                <Field>
+                    <FieldLabel htmlFor="description">Description</FieldLabel>
+                    <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} />
+                </Field>
             </FieldSet>
         </FieldGroup>
     );
