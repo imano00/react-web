@@ -1,16 +1,17 @@
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 
 type EditDialogProps = {
-    open: boolean;
-    setOpen: (open: boolean) => void;
     title: string;
     trigger?: React.ReactNode;
     onSubmit: (e: React.FormEvent) => void;
     children: React.ReactNode;
 };
 
-export default function EditDialog({ open, setOpen, title, trigger, onSubmit, children }: EditDialogProps) {
+export default function EditDialog({ title, trigger, onSubmit, children }: EditDialogProps) {
+    const [open, setOpen] = useState(false);
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
