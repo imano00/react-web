@@ -7,6 +7,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventoryLogController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -45,9 +46,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     //Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
 
-    // Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/inventorylog', [InventoryLogController::class, 'index'])->name('inventorylog.index');
 
-    // Route::apiResource('orders', OrderController::class);
+    // Route::get('/inventory/{inventoryItemId}/logs', [InventoryLogController::class, 'showByItem'])->name('inventory.item.logs');
+
+    
 });
 
 require __DIR__.'/settings.php';

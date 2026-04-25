@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StatisticController;
 use Inertia\Inertia;
+use App\Http\Controllers\InventoryLogController;
 
 /*
 |--------------------------------------------------------------------------
