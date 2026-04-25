@@ -18,6 +18,10 @@ class InventoryItem extends Model
         'description',
     ];
 
+    public function logs()
+    {
+        return $this->hasMany(InventoryLog::class);
+    }
     public function subcategory()
     {
         return $this->belongsTo(SubCategory::class, 'subcategory_id');
