@@ -16,7 +16,7 @@ export default function EditDialog({ title, trigger, onSubmit, children }: EditD
         <Dialog open={open} onOpenChange={setOpen}>
             {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
-            <DialogContent>
+            <DialogContent className="no-scrollbar -mx-4 max-h-[50vh] overflow-y-auto px-4">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                 </DialogHeader>

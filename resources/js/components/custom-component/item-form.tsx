@@ -36,7 +36,7 @@ type ItemFormProps = {
 };
 
 export function ItemForm({ data, setData, categories = [], mode }: ItemFormProps) {
-    const selectedCategory = categories.find((c) => c.id === data.category_id);
+    const selectedCategory = categories.find((cat) => cat.id === data.category_id);
 
     const incrementPrice = (amount: number) => {
         setData('price', Number((Number(data.price ?? 0) + amount).toFixed(2)));
@@ -62,6 +62,9 @@ export function ItemForm({ data, setData, categories = [], mode }: ItemFormProps
         setData('reorder_level', Number((Number(data.reorder_level ?? 0) - amount).toFixed(2)));
     };
 
+    const isEditMode = mode === 'edit';
+    const isCreateMode = mode === 'create';
+
     return (
         <FieldGroup>
             <FieldSet>
@@ -77,8 +80,14 @@ export function ItemForm({ data, setData, categories = [], mode }: ItemFormProps
                     <Select
                         value={data.category_id?.toString() ?? ''}
                         onValueChange={(v) => {
-                            setData('category_id', Number(v));
-                            setData('subcategory_id', undefined); // reset subcategory when category changes
+                            const newCategoryId = Number(v);
+
+                            if (newCategoryId !== data.category_id) {
+                                setData('category_id', newCategoryId);
+
+                                // Reset subcategory only if category actually changed
+                                setData('subcategory_id', undefined);
+                            }
                         }}
                     >
                         <SelectTrigger className="w-full">
@@ -102,14 +111,14 @@ export function ItemForm({ data, setData, categories = [], mode }: ItemFormProps
                     <Select
                         value={data.subcategory_id?.toString() ?? ''}
                         onValueChange={(v) => setData('subcategory_id', Number(v))}
-                        disabled={!selectedCategory}
+                        disabled={isCreateMode && !data.category_id}
                     >
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select subcategory" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                {selectedCategory?.subcategories.map((sub) => (
+                                {selectedCategory?.subcategories?.map((sub) => (
                                     <SelectItem key={sub.id} value={sub.id.toString()}>
                                         {sub.name.charAt(0).toUpperCase() + sub.name.slice(1)}
                                     </SelectItem>

@@ -44,6 +44,11 @@ const mainNavItems: NavItem[] = [
         href: '/inventory',
         icon: Folder,
     },
+    {
+        title: 'Inventory Logs',
+        href: '/inventorylog',
+        icon: Folder,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

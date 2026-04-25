@@ -44,6 +44,7 @@ export function DrinkForm({ data, setData, categories = [], mode }: DrinkFormPro
     const decrementPrice = (amount: number) => {
         setData('price', Number((Number(data.price ?? 0) - amount).toFixed(2)));
     };
+
     return (
         <FieldGroup>
             <FieldSet>

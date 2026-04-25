@@ -10,13 +10,25 @@ import DetailCard from './detail-card';
 import EditDialog from './edit-dialog';
 import { ItemForm } from './item-form';
 
+type Category = {
+    id: number;
+    name: string;
+    subcategories: Subcategory[];
+};
+
+type Subcategory = {
+    id: number;
+    name: string;
+    category: { id: number; name: string };
+};
 type ItemCardProps = {
     item: InventoryItem;
     onEdit: (item: InventoryItem) => void;
     onDelete: (id: number) => void;
+    categories: Category[];
 };
 
-export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
+export function ItemCard({ item, onEdit, onDelete, categories }: ItemCardProps) {
     const isLowStock = item.reorder_level !== undefined && item.current_stock <= item.reorder_level;
 
     const {
@@ -38,7 +50,6 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
 
     const [open, setOpen] = useState(false);
     const [editingDrink, setEditingDrink] = useState<null | number>(null);
-    const [categories, setCategories] = useState([]);
     const [showDescription, setShowDescription] = useState(false);
 
     const startEdit = (InventoryItem: InventoryItem) => {
@@ -67,6 +78,7 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
             console.error('Error updating drink:', e);
         }
     };
+
     return (
         <Card className="rounded-2xl shadow-md">
             <CardContent className="space-y-2">
@@ -97,7 +109,7 @@ export function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
                         children={<EditForm data={data} setData={setData} categories={categories} showDescription={showDescription} />}
                     /> */}
                     <EditDialog
-                        title="Edit Drink🍹"
+                        title="Edit Item"
                         onSubmit={editSubmit}
                         trigger={
                             <Button onClick={() => startEdit(item)} className="rounded-full p-2 text-blue-500 hover:bg-blue-100">
