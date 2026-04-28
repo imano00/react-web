@@ -49,6 +49,11 @@ const mainNavItems: NavItem[] = [
         href: '/inventorylog',
         icon: Folder,
     },
+    {
+        title: 'Shopping',
+        href: '/customer/products',
+        icon: Folder,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
