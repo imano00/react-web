@@ -9,10 +9,19 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Inertia\Inertia;
+use App\Http\Resources\ProductResource;
 
 class ShoppingController extends Controller
 {
-    // 📦 1. Get Products (for customer page)
+
+// Loads React page
+public function index()
+{
+    return Inertia::render('Shopping/Index', [
+        'products' => Product::all()
+    ]);
+}
     // 📦 1. Get Products (for customer page)
 public function products(Request $request)
 {
@@ -37,7 +46,11 @@ public function products(Request $request)
     }
 
     // 📊 Sorting
-    $sort = $request->get('sort', 'name'); // name | price | latest
+    $allowedSorts = ['name', 'price', 'latest'];
+
+$sort = in_array($request->get('sort'), $allowedSorts)
+    ? $request->get('sort')
+    : 'name';
 
     if ($sort === 'price') {
         $query->orderBy('price');
@@ -48,19 +61,25 @@ public function products(Request $request)
     }
 
     $products = $query->get()->map(function ($product) {
-        return [
-            'id' => $product->id,
-            'name' => $product->name,
-            'price' => (float) $product->price,
-            'stock' => $product->stock,
-            'category_id' => $product->category_id,
-            'category_name' => $product->category?->name,
-            'image_url' => $product->image_url,
-            'is_active' => $product->is_active,
-        ];
+        return new ProductResource($product);
     });
 
-    return response()->json($products);
+    // return response()->json($products);
+    return $products;
+}
+
+
+
+public function show(Product $product)
+{
+        $product->load([
+        'category',
+        'images'
+    ]);
+
+    return Inertia::render('Shopping/Detail', [
+        'product' => new ProductResource($product)
+    ]);
 }
 
     // 🛒 2. Get Cart (session-based)
