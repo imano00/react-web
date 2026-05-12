@@ -6,8 +6,8 @@ import { toast } from 'sonner';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
-import DetailCard from './detail-card';
-import EditDialog from './edit-dialog';
+import DetailCard from './Drink/detail-card';
+import EditDialog from './Drink/edit-dialog';
 import { ItemForm } from './item-form';
 
 type Category = {
