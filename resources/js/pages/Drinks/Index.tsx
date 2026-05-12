@@ -1,7 +1,7 @@
-import AddDrinkDialog from '@/components/custom-component/add-drink-dialog';
-import DetailCard from '@/components/custom-component/detail-card';
-import { DrinkForm } from '@/components/custom-component/drink-form';
-import EditDialog from '@/components/custom-component/edit-dialog';
+import AddDrinkDialog from '@/components/custom-component/Drink/add-drink-dialog';
+import DetailCard from '@/components/custom-component/Drink/detail-card';
+import { DrinkForm } from '@/components/custom-component/Drink/drink-form';
+import EditDialog from '@/components/custom-component/Drink/edit-dialog';
 import SearchBar from '@/components/custom-component/search-bar';
 import {
     AlertDialog,
