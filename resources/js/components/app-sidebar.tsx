@@ -51,7 +51,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Shopping',
-        href: '/customer/products',
+        href: '/customer/shopping',
         icon: Folder,
     },
 ];
