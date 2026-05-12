@@ -6,6 +6,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StatisticController;
 use Inertia\Inertia;
 use App\Http\Controllers\InventoryLogController;
+use App\Http\Controllers\ShoppingController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,5 +40,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/sales/yesterday', [StatisticController::class, 'getYesterdaySalesData']);
     Route::get('/monthly-sales', [StatisticController::class, 'getMonthlySalesData']);
     // Route::get('/stats/yesterday-sales', [DashboardController::class, 'getYesterdaySales']);
+
+
+    Route::apiResource('products', ProductController::class);
 
 

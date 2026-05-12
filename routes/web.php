@@ -60,7 +60,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('/products', [ShoppingController::class, 'products']);
     // Shopping Controller
     Route::prefix('customer')->group(function () {
-        Route::get('/products', [ShoppingController::class, 'products']);
+        Route::get('/shopping', [ShoppingController::class, 'index'])->name('shopping.index');
+        Route::get('/products', [ShoppingController::class, 'products'])->name('shopping.products');
+        Route::get('/product/{product}', [ShoppingController::class, 'show'])->name('shopping.show');
+
         Route::get('/cart', [ShoppingController::class, 'cart']);
         Route::post('/cart/add', [ShoppingController::class, 'addToCart']);
         Route::post('/cart/remove', [ShoppingController::class, 'removeFromCart']);
